@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Laravel</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body>
     <section class="hero is-primary">
@@ -27,78 +28,43 @@
         <h1 class="title">Tasks | Show: {{ $task->id }}</h1>
         <div class="card">
             <div class="card-content">
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label">ID</label>
-                    </div>
-                    <div class="field-body">
-                        <div class="field">
-                            <p class="control">
-                                <input class="input" type="text" value="{{ $task->id }}" disabled>
-                            </p>
-                        </div>
-                    </div>
+                <!-- Task Detail Fields -->
+                <div class="content">
+                    <p><strong>Title:</strong> {{ $task->title }}</p>
+                    <p><strong>Description:</strong> {{ $task->description }}</p>
+                    <p><strong>Status:</strong> {{ $task->is_completed ? 'Completed' : 'Pending' }}</p>
                 </div>
 
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label">Title</label>
-                    </div>
-                    <div class="field-body">
-                        <div class="field">
-                            <p class="control">
-                                <input class="input" type="text" value="{{ $task->title }}" disabled>
-                            </p>
+                <!-- Comments Section -->
+                <div class="comments">
+                    <h3>Comments</h3>
+                    @foreach($task->comments as $comment)
+                        <div class="box">
+                            <article class="media">
+                                <div class="media-content">
+                                    <div class="content">
+                                        <p>{{ $comment->comment }}</p>
+                                    </div>
+                                    <small>{{ $comment->created_at->diffForHumans() }}</small>
+                                </div>
+                            </article>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
 
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label">Description</label>
-                    </div>
-                    <div class="field-body">
-                        <div class="field">
-                            <div class="control">
-                                <textarea class="textarea" disabled>{{ $task->description }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label">is_completed</label>
-                    </div>
-                    <div class="field-body">
-                        <div class="field">
-                            <p class="control">
-                                <input class="input" type="text" value="{{ $task->is_completed ? 'Done' : 'Yet' }}" disabled>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Toggle Completion Status -->
-                @if($task->is_completed)
+                <!-- Comment Submission Form -->
+                <form method="POST" action="{{ route('tasks.comments.store', $task) }}">
+                    @csrf
                     <div class="field">
-                        <form method="post" action="{{ route('tasks.yet_complete', $task) }}">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="button is-warning">Mark as Incomplete</button>
-                        </form>
+                        <label class="label" for="comment">New Comment</label>
+                        <textarea name="comment" id="comment" class="textarea" required></textarea>
                     </div>
-                @else
                     <div class="field">
-                        <form method="post" action="{{ route('tasks.complete', $task) }}">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="button is-success">Mark as Complete</button>
-                        </form>
+                        <button type="submit" class="button is-link">Add Comment</button>
                     </div>
-                @endif
-                
+                </form>
 
+                <!-- Footer with Edit Link -->
                 <footer class="card-footer">
                     <a class="card-footer-item button" href="{{ route('tasks.edit', $task) }}">Edit</a>
                 </footer>

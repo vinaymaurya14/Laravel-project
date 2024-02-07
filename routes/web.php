@@ -25,4 +25,7 @@ Route::controller(TaskController::class)
         Route::patch('yet_complete', 'yetComplete')->name('yet_complete');
     });
 
+Route::post('tasks/{task}/comments', [TaskController::class, 'storeComment'])->name('tasks.comments.store');
+
+
 Route::resource('tasks', TaskController::class);
