@@ -9,17 +9,15 @@
 <body>
 <section class="hero is-primary">
     <div class="hero-body">
-        <p class="title">
-            Task Managements
-        </p>
+        <p class="title">Task Managements</p>
     </div>
 </section>
 @if($errors->any())
     <div class="notification is-danger">
         <button class="delete"></button>
         <ul>
-            @foreach(\Illuminate\Support\Arr::flatten($errors->get('*')) as $message)
-                <li>{{ $message }}</li>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
             @endforeach
         </ul>
     </div>
@@ -27,78 +25,47 @@
 <section class="section">
     <h1 class="title">Tasks | Index</h1>
     <h2 class="subtitle">Can create new task <a href="{{ route('tasks.create') }}">here.</a></h2>
-    <div class="tile">
+    <div class="tile is-ancestor">
         @foreach($tasks as $task)
-            <div class="tile is-1" style="margin: 4px">
-                <div class="box @if($task->is_completed) has-background-grey-lighter @endif">
-                    <article class="media">
-                        <div class="media-content">
-                            <div class="content">
-                                <p>
-                                    <strong>{{ mb_strimwidth($task->title, 0, 15, '...') }}</strong>
-                                    <br>
-                                    {{ mb_strimwidth($task->description, 0, 15, '...') }}
-                                </p>
-                            </div>
+            <div class="tile is-parent">
+                <article class="tile is-child box @if($task->is_completed) has-background-grey-lighter @endif">
+                    <p class="title">{{ Str::limit($task->title, 20) }}</p>
+                    <p class="subtitle">{{ Str::limit($task->description, 50) }}</p>
+                    <div class="content">
+                        <!-- Toggle Task Completion -->
+                        @if($task->is_completed)
+                            <form method="POST" action="{{ route('tasks.yet_complete', $task->id) }}" style="display: inline;">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="button is-small">
+                                    <span class="icon is-small"><i class="fas fa-undo"></i></span>
+                                </button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('tasks.complete', $task->id) }}" style="display: inline;">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="button is-small">
+                                    <span class="icon is-small"><i class="fas fa-check"></i></span>
+                                </button>
+                            </form>
+                        @endif
 
-                            <nav class="level">
-                                <div class="level-left">
-                                </div>
-                                <div class="level-right">
-                                    @if($task->is_completed)
-                                        <div class="level-item">
-                                            <form>
-                                                @csrf
-                                                @method('PATCH')
-                                                <span class="icon">
-                                                <button type="submit" class="has-text-link is-clickable"
-                                                        style="background: none; border: unset">
-                                                    <i class="fa-solid fa-toggle-off"></i>
-                                                </button>
-                                            </span>
-                                            </form>
-                                        </div>
-                                    @else
-                                        <div class="level-item">
-                                            <form>
-                                                @csrf
-                                                @method('PATCH')
-                                                <span class="icon">
-                                                <button type="submit" class="has-text-link is-clickable"
-                                                        style="background: none; border: unset">
-                                                    <i class="fa-solid fa-toggle-on"></i>
-                                                </button>
-                                            </span>
-                                            </form>
-                                        </div>
-                                    @endif
+                        <!-- Delete Task Button -->
+                        <form method="POST" action="{{ route('tasks.destroy', $task->id) }}" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="button is-small is-danger">
+                                <span class="icon is-small"><i class="fas fa-trash"></i></span>
+                            </button>
+                        </form>
 
-                                    <!-- Delete Button Form -->
-                                    <div class="level-item">
-                                        <form method="POST" action="{{ route('tasks.destroy', $task->id) }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <span class="icon">
-                                                <button type="submit" class="has-text-link is-clickable"
-                                                        style="background: none; border: unset">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </span>
-                                        </form>
-                                    </div>
-                                    <!-- Show Button -->
-                                    <div class="level-item">
-                                        <a href="{{ route('tasks.show', $task->id) }}">
-                                            <span class="icon">
-                                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </nav>
-                        </div>
-                    </article>
-                </div>
+                        <!-- Show Task Details Button -->
+                        <a href="{{ route('tasks.show', $task->id) }}" class="button is-small is-info">
+                            <span class="icon is-small"><i class="fas fa-eye"></i></span>
+                        </a>
+                    </div>
+                </article>
             </div>
         @endforeach
     </div>

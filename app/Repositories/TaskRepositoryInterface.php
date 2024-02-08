@@ -2,15 +2,53 @@
 
 namespace App\Repositories;
 
+use App\Models\Task;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 interface TaskRepositoryInterface
 {
-    public function index();
+    /**
+     * Retrieve all tasks.
+     *
+     * @return Collection|Task[]
+     */
+    public function index(): Collection;
 
-    public function find($id);
+    /**
+     * Find a task by its primary key.
+     *
+     * @param int $id
+     * @throws ModelNotFoundException if no model is found.
+     * @return Task
+     */
+    public function find(int $id): Task;
 
-    public function store(array $data);
+    /**
+     * Store a new task in the database.
+     *
+     * @param array $data Data to create a new task.
+     * @return Task The newly created task model instance.
+     */
+    public function store(array $data): Task;
 
-    public function update($id, array $data);
+    /**
+     * Update an existing task.
+     *
+     * @param int $id The task ID to update.
+     * @param array $data Data to update the task.
+     * @throws ModelNotFoundException if no model is found.
+     * @return Task The updated task model instance.
+     */
+    public function update(int $id, array $data): Task;
 
-    public function delete($id);
+    /**
+     * Delete a task by its primary key.
+     *
+     * @param int $id The task ID to delete.
+     * @throws ModelNotFoundException if no model is found.
+     * @return bool `true` on success, `false` on failure.
+     */
+    public function delete(int $id): bool;
 }
+

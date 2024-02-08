@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Task;
 use App\Repositories\TaskRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class TaskRepository implements TaskRepositoryInterface
 {
@@ -12,7 +13,7 @@ class TaskRepository implements TaskRepositoryInterface
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function index()
+    public function index(): Collection
     {
         return Task::all();
     }
@@ -23,7 +24,7 @@ class TaskRepository implements TaskRepositoryInterface
      * @param int $id
      * @return Task|null
      */
-    public function find($id)
+    public function find(int $id): Task
     {
         return Task::find($id);
     }
@@ -34,7 +35,7 @@ class TaskRepository implements TaskRepositoryInterface
      * @param array $data
      * @return Task
      */
-    public function store(array $data)
+    public function store(array $data): Task
     {
         return Task::create($data);
     }
@@ -46,7 +47,7 @@ class TaskRepository implements TaskRepositoryInterface
      * @param array $data
      * @return Task
      */
-    public function update($id, array $data)
+    public function update(int $id, array $data): Task
     {
         $task = $this->find($id);
         if ($task) {
@@ -61,7 +62,7 @@ class TaskRepository implements TaskRepositoryInterface
      * @param int $id
      * @return bool
      */
-    public function delete($id)
+    public function delete(int $id): bool
     {
         $task = $this->find($id);
         if ($task) {
