@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\Task\StoreRequest;
 use App\Models\Task;
 use Illuminate\Support\Facades\DB;
@@ -88,7 +89,6 @@ class TaskController extends Controller
         $this->taskRepository->update($id, ['is_completed' => true]);
 
         return to_route('tasks.index');
-    
     }
 
     public function yetComplete($id)
@@ -106,6 +106,4 @@ class TaskController extends Controller
     
         return redirect()->route('tasks.show', $id);
     }
-    
-
 }
